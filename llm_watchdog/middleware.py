@@ -3,14 +3,14 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, List, Optional
 
-from .watcher import PromptWatcher
+from .watcher import LlmWatchdog
 
 logger = logging.getLogger(__name__)
 
 
-def create_fastapi_middleware(watcher: PromptWatcher, monitored_paths: Optional[List[str]] = None):
+def create_fastapi_middleware(watcher: LlmWatchdog, monitored_paths: Optional[List[str]] = None):
     """
     Create a Starlette/FastAPI middleware that auto-monitors LLM responses.
 
@@ -23,7 +23,7 @@ def create_fastapi_middleware(watcher: PromptWatcher, monitored_paths: Optional[
     except ImportError as exc:
         raise ImportError("Install 'starlette' or 'fastapi' to use FastAPI middleware.") from exc
 
-    class PromptWatchMiddleware(BaseHTTPMiddleware):
+    class LlmWatchdogMiddleware(BaseHTTPMiddleware):
         async def dispatch(self, request: Request, call_next: Callable) -> Any:
             paths = monitored_paths or ["/"]
             if not any(str(request.url.path).startswith(p) for p in paths):
@@ -68,13 +68,13 @@ def create_fastapi_middleware(watcher: PromptWatcher, monitored_paths: Optional[
                 media_type=response.media_type,
             )
 
-    return PromptWatchMiddleware
+    return LlmWatchdogMiddleware
 
 
-def create_flask_middleware(watcher: PromptWatcher):
+def create_flask_middleware(watcher: LlmWatchdog):
     """Create a Flask after_request hook for LLM response monitoring."""
     try:
-        from flask import Flask, request as flask_request, g
+        from flask import request as flask_request
     except ImportError as exc:
         raise ImportError("Install 'flask' to use Flask middleware.") from exc
 

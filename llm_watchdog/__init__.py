@@ -1,10 +1,10 @@
 """
-promptwatch — Production-grade silent failure detection for LLM applications.
+llm_watchdog — Production-grade silent failure detection for LLM applications.
 
 Detects hallucinations, PII leaks, topic drift, toxicity, and quality degradation
 in real time with zero traditional APM dependency.
 """
-from .watcher import PromptWatcher
+from .watcher import LlmWatchdog
 from .models import (
     WatchResult,
     DetectionResult,
@@ -14,7 +14,7 @@ from .models import (
     FailureType,
 )
 from .exceptions import (
-    PromptWatchError,
+    LlmWatchdogError,
     HallucinationDetectedError,
     PIILeakDetectedError,
     TopicDriftError,
@@ -48,15 +48,15 @@ from .advanced import (
     CostLedger,
 )
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __all__ = [
     # Core
-    "PromptWatcher",
+    "LlmWatchdog",
     # Models
     "WatchResult", "DetectionResult", "AlertEvent", "DriftSnapshot",
     "RiskLevel", "FailureType",
     # Exceptions
-    "PromptWatchError", "HallucinationDetectedError", "PIILeakDetectedError",
+    "LlmWatchdogError", "HallucinationDetectedError", "PIILeakDetectedError",
     "TopicDriftError", "SemanticDriftError", "BudgetExceededError", "AlertDeliveryError",
     # Detectors
     "HallucinationDetector", "PIIDetector", "TopicGuard", "ToxicityDetector", "QualityDetector",

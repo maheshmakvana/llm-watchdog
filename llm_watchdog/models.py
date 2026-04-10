@@ -1,4 +1,4 @@
-"""Pydantic models for promptwatch data structures."""
+"""Pydantic models for llm_watchdog data structures."""
 from __future__ import annotations
 
 from datetime import datetime

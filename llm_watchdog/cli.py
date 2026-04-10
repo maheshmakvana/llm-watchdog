@@ -1,4 +1,4 @@
-"""CLI entry point for promptwatch."""
+"""CLI entry point for llm_watchdog."""
 from __future__ import annotations
 
 import argparse
@@ -7,9 +7,9 @@ import sys
 
 
 def main() -> None:
-    """promptwatch CLI — monitor LLM responses from the command line."""
+    """llm_watchdog CLI — monitor LLM responses from the command line."""
     parser = argparse.ArgumentParser(
-        prog="promptwatch",
+        prog="llm-watchdog",
         description="Detect silent failures in LLM responses",
     )
     parser.add_argument("--prompt", required=True, help="The prompt text")
@@ -17,8 +17,8 @@ def main() -> None:
     parser.add_argument("--json", action="store_true", help="Output as JSON")
     args = parser.parse_args()
 
-    from .watcher import PromptWatcher
-    watcher = PromptWatcher()
+    from .watcher import LlmWatchdog
+    watcher = LlmWatchdog()
     result = watcher.watch(args.prompt, args.response)
 
     if args.json:
@@ -28,7 +28,7 @@ def main() -> None:
         print(f"[{status}] Risk: {result.overall_risk.value} | Score: {result.overall_score:.3f}")
         for d in result.detections:
             if d.detected:
-                print(f"  ⚠  {d.failure_type.value}: score={d.score:.3f} risk={d.risk_level.value}")
+                print(f"  {d.failure_type.value}: score={d.score:.3f} risk={d.risk_level.value}")
 
 
 if __name__ == "__main__":

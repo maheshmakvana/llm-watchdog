@@ -1,5 +1,5 @@
 """
-Advanced features for promptwatch.
+Advanced features for llm-watchdog.
 
 Categories covered:
   1 - Caching & Semantic Deduplication  (WatchCache)
@@ -33,7 +33,7 @@ from datetime import datetime
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple
 
 from .models import WatchResult, RiskLevel, FailureType
-from .watcher import PromptWatcher
+from .watcher import LlmWatchdog
 
 logger = logging.getLogger(__name__)
 
@@ -81,8 +81,8 @@ class WatchCache:
             self._store[key] = (result, time.monotonic())
             self._order.append(key)
 
-    def memoize(self, watcher: PromptWatcher) -> Callable:
-        """Wrap PromptWatcher.watch with cache."""
+    def memoize(self, watcher: LlmWatchdog) -> Callable:
+        """Wrap LlmWatchdog.watch with cache."""
         def cached_watch(prompt: str, response: str, **kwargs) -> WatchResult:
             hit = self.get(prompt, response)
             if hit is not None:
@@ -270,7 +270,7 @@ class RateLimiter:
 
 
 def batch_watch(
-    watcher: PromptWatcher,
+    watcher: LlmWatchdog,
     pairs: List[Tuple[str, str]],
     max_workers: int = 8,
 ) -> List[WatchResult]:
@@ -281,7 +281,7 @@ def batch_watch(
 
 
 async def abatch_watch(
-    watcher: PromptWatcher,
+    watcher: LlmWatchdog,
     pairs: List[Tuple[str, str]],
     concurrency: int = 8,
 ) -> List[WatchResult]:
@@ -366,7 +366,7 @@ class DriftDetector:
 class StreamingWatcher:
     """Yield WatchResults one at a time from a large batch without buffering."""
 
-    def __init__(self, watcher: PromptWatcher) -> None:
+    def __init__(self, watcher: LlmWatchdog) -> None:
         self._watcher = watcher
 
     def stream(
@@ -466,7 +466,7 @@ class AgentWatchSession:
     Tracks cumulative risk across all turns and detects escalating failures.
     """
 
-    def __init__(self, watcher: PromptWatcher, max_risk_budget: float = 2.0) -> None:
+    def __init__(self, watcher: LlmWatchdog, max_risk_budget: float = 2.0) -> None:
         self._watcher = watcher
         self.max_risk_budget = max_risk_budget
         self._turns: List[WatchResult] = []

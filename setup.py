@@ -2,13 +2,12 @@ from setuptools import setup, find_packages
 
 setup(
     name="llm-watchdog",
-    version="1.0.0",
+    version="1.0.1",
     description="Production-grade silent failure detection for LLM applications — hallucination alerts, PII leak detection, semantic drift, topic guard, and real-time observability",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    author="Mahesh Makvana",
     url="https://github.com/MaheshMakvana1/llm-watchdog",
-    packages=find_packages(exclude=["tests*", "venv*"]),
+    packages=find_packages(exclude=["tests*", "venv*", "llm-watchdog*", "build*"]),
     python_requires=">=3.8",
     install_requires=[
         "pydantic>=2.0",
@@ -50,7 +49,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "promptwatch=promptwatch.cli:main",
+            "llm-watchdog=llm_watchdog.cli:main",
         ],
     },
 )

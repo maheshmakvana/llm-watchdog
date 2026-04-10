@@ -1,2 +1,2 @@
 [console_scripts]
-promptwatch = promptwatch.cli:main
+llm-watchdog = llm_watchdog.cli:main

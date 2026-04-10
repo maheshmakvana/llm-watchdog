@@ -1,4 +1,4 @@
-"""Metric detectors for promptwatch."""
+"""Metric detectors for llm_watchdog."""
 from .hallucination import HallucinationDetector
 from .pii import PIIDetector
 from .topic import TopicGuard

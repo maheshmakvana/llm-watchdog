@@ -1,14 +1,14 @@
-"""Tests for promptwatch core and advanced features."""
+"""Tests for llm_watchdog core and advanced features."""
 from __future__ import annotations
 
 import asyncio
 import pytest
 
-from promptwatch import (
-    PromptWatcher, WatchResult, RiskLevel, FailureType,
+from llm_watchdog import (
+    LlmWatchdog, WatchResult, RiskLevel, FailureType,
     HallucinationDetector, PIIDetector, TopicGuard, ToxicityDetector, QualityDetector,
 )
-from promptwatch.advanced import (
+from llm_watchdog.advanced import (
     WatchCache, WatchPipeline, WatchValidator, ConfidenceScorer,
     RateLimiter, batch_watch, abatch_watch,
     OperationProfiler, DriftDetector,
@@ -27,7 +27,7 @@ TOXIC_RESPONSE = "You should kill yourself."
 # ── Core ──────────────────────────────────────────────────────────────────
 
 def test_watch_safe_response():
-    watcher = PromptWatcher()
+    watcher = LlmWatchdog()
     result = watcher.watch(SAFE_PROMPT, SAFE_RESPONSE)
     assert isinstance(result, WatchResult)
     assert result.passed is True
@@ -35,7 +35,7 @@ def test_watch_safe_response():
 
 
 def test_watch_pii_detected():
-    watcher = PromptWatcher(pii_threshold=0.1)
+    watcher = LlmWatchdog(pii_threshold=0.1)
     result = watcher.watch(SAFE_PROMPT, PII_RESPONSE)
     pii = next(d for d in result.detections if d.failure_type == FailureType.PII_LEAK)
     assert pii.detected is True
@@ -43,14 +43,14 @@ def test_watch_pii_detected():
 
 
 def test_watch_toxicity_detected():
-    watcher = PromptWatcher(toxicity_threshold=0.3)
+    watcher = LlmWatchdog(toxicity_threshold=0.3)
     result = watcher.watch(SAFE_PROMPT, TOXIC_RESPONSE)
     tox = next(d for d in result.detections if d.failure_type == FailureType.TOXICITY)
     assert tox.detected is True
 
 
 def test_watch_hallucination_detected():
-    watcher = PromptWatcher(hallucination_threshold=0.3)
+    watcher = LlmWatchdog(hallucination_threshold=0.3)
     result = watcher.watch(SAFE_PROMPT, HALLUCINATION_RESPONSE)
     hall = next(d for d in result.detections if d.failure_type == FailureType.HALLUCINATION)
     assert hall.score > 0
@@ -58,21 +58,21 @@ def test_watch_hallucination_detected():
 
 def test_watch_alert_fired():
     fired = []
-    watcher = PromptWatcher(pii_threshold=0.1)
+    watcher = LlmWatchdog(pii_threshold=0.1)
     watcher.on_alert(lambda e: fired.append(e))
     watcher.watch(SAFE_PROMPT, PII_RESPONSE)
     assert len(fired) > 0
 
 
 def test_watch_stats():
-    watcher = PromptWatcher()
+    watcher = LlmWatchdog()
     watcher.watch(SAFE_PROMPT, SAFE_RESPONSE)
     s = watcher.stats()
     assert s["total_watched"] == 1
 
 
 def test_watch_result_to_dict():
-    watcher = PromptWatcher()
+    watcher = LlmWatchdog()
     result = watcher.watch(SAFE_PROMPT, SAFE_RESPONSE)
     d = result.to_dict()
     assert "passed" in d
@@ -80,7 +80,7 @@ def test_watch_result_to_dict():
 
 
 def test_async_watch():
-    watcher = PromptWatcher()
+    watcher = LlmWatchdog()
     result = asyncio.run(watcher.awatch(SAFE_PROMPT, SAFE_RESPONSE))
     assert isinstance(result, WatchResult)
 
@@ -115,7 +115,7 @@ def test_quality_detector_empty():
 # ── Advanced ──────────────────────────────────────────────────────────────
 
 def test_watch_cache():
-    watcher = PromptWatcher()
+    watcher = LlmWatchdog()
     cache = WatchCache(max_size=10, ttl=60)
     cached = cache.memoize(watcher)
     r1 = cached(SAFE_PROMPT, SAFE_RESPONSE)
@@ -126,7 +126,7 @@ def test_watch_cache():
 
 
 def test_watch_pipeline():
-    watcher = PromptWatcher()
+    watcher = LlmWatchdog()
     result = watcher.watch(SAFE_PROMPT, SAFE_RESPONSE)
     pipeline = WatchPipeline()
     pipeline.add_step("identity", lambda r: r)
@@ -136,7 +136,7 @@ def test_watch_pipeline():
 
 
 def test_watch_validator():
-    watcher = PromptWatcher()
+    watcher = LlmWatchdog()
     result = watcher.watch(SAFE_PROMPT, SAFE_RESPONSE)
     validator = WatchValidator().require_pass().max_score(0.99)
     violations = validator.validate(result)
@@ -144,7 +144,7 @@ def test_watch_validator():
 
 
 def test_confidence_scorer():
-    watcher = PromptWatcher()
+    watcher = LlmWatchdog()
     result = watcher.watch(SAFE_PROMPT, SAFE_RESPONSE)
     scorer = ConfidenceScorer()
     score = scorer.score(result)
@@ -159,14 +159,14 @@ def test_rate_limiter_sync():
 
 
 def test_batch_watch():
-    watcher = PromptWatcher()
+    watcher = LlmWatchdog()
     pairs = [(SAFE_PROMPT, SAFE_RESPONSE)] * 3
     results = batch_watch(watcher, pairs)
     assert len(results) == 3
 
 
 def test_abatch_watch():
-    watcher = PromptWatcher()
+    watcher = LlmWatchdog()
     pairs = [(SAFE_PROMPT, SAFE_RESPONSE)] * 3
     results = asyncio.run(abatch_watch(watcher, pairs))
     assert len(results) == 3
@@ -186,7 +186,7 @@ def test_drift_detector():
 
 
 def test_streaming_watcher():
-    watcher = PromptWatcher()
+    watcher = LlmWatchdog()
     sw = StreamingWatcher(watcher)
     pairs = [(SAFE_PROMPT, SAFE_RESPONSE)] * 3
     results = list(sw.stream(pairs))
@@ -194,7 +194,7 @@ def test_streaming_watcher():
 
 
 def test_watch_diff():
-    watcher = PromptWatcher()
+    watcher = LlmWatchdog()
     r1 = watcher.watch(SAFE_PROMPT, SAFE_RESPONSE)
     r2 = watcher.watch(SAFE_PROMPT, PII_RESPONSE)
     diff = WatchDiff(before=r1, after=r2)
@@ -212,7 +212,7 @@ def test_regression_tracker():
 
 
 def test_agent_watch_session():
-    watcher = PromptWatcher()
+    watcher = LlmWatchdog()
     session = AgentWatchSession(watcher, max_risk_budget=10.0)
     session.watch_turn(SAFE_PROMPT, SAFE_RESPONSE)
     summary = session.session_summary()
@@ -227,7 +227,7 @@ def test_pii_scrubber():
 
 
 def test_audit_log():
-    watcher = PromptWatcher()
+    watcher = LlmWatchdog()
     result = watcher.watch(SAFE_PROMPT, SAFE_RESPONSE)
     audit = AuditLog()
     audit.record(result)

@@ -1,9 +1,8 @@
 Metadata-Version: 2.4
 Name: llm-watchdog
-Version: 1.0.0
+Version: 1.0.1
 Summary: Production-grade silent failure detection for LLM applications — hallucination alerts, PII leak detection, semantic drift, topic guard, and real-time observability
 Home-page: https://github.com/MaheshMakvana1/llm-watchdog
-Author: Mahesh Makvana
 Keywords: llm monitoring,ai observability,hallucination detection,pii detection,semantic drift,production ai,llm alerts,ai safety,prompt monitoring,silent failure detection,llm quality,ai production monitoring,topic drift,ai reliability,llm guardrails
 Classifier: Development Status :: 5 - Production/Stable
 Classifier: Intended Audience :: Developers
@@ -38,7 +37,6 @@ Requires-Dist: opentelemetry-api>=1.20.0; extra == "all"
 Provides-Extra: dev
 Requires-Dist: pytest>=7.0; extra == "dev"
 Requires-Dist: pytest-asyncio>=0.21; extra == "dev"
-Dynamic: author
 Dynamic: classifier
 Dynamic: description
 Dynamic: description-content-type
@@ -49,21 +47,21 @@ Dynamic: requires-dist
 Dynamic: requires-python
 Dynamic: summary
 
-# promptwatch
+# llm-watchdog
 
 **Production-grade silent failure detection for LLM applications.**
 
-Traditional monitoring (Datadog, New Relic) shows 200 OK in 1.2 seconds â€” but it cannot detect hallucinations, PII leaks, topic drift, or quality degradation in your LLM responses. `promptwatch` fills that gap.
+Traditional monitoring (Datadog, New Relic) shows 200 OK in 1.2 seconds â€” but it cannot detect hallucinations, PII leaks, topic drift, or quality degradation in your LLM responses. `llm-watchdog` fills that gap.
 
 ```bash
-pip install promptwatch
+pip install llm-watchdog
 ```
 
 ---
 
-## Why promptwatch?
+## Why llm-watchdog?
 
-| Problem | Traditional APM | promptwatch |
+| Problem | Traditional APM | llm-watchdog |
 |---------|----------------|-------------|
 | Hallucination risk | Blind | Scored 0â€“1 |
 | PII leaks in output | Blind | Detected + alerted |
@@ -77,9 +75,9 @@ pip install promptwatch
 ## Quickstart
 
 ```python
-from promptwatch import PromptWatcher
+from llm-watchdog import llm-watchdoger
 
-watcher = PromptWatcher()
+watcher = llm-watchdoger()
 
 result = watcher.watch(
     prompt="What is the capital of France?",
@@ -96,9 +94,9 @@ print(result.overall_risk)    # RiskLevel.LOW
 ## Alert Hooks
 
 ```python
-from promptwatch import PromptWatcher, AlertEvent
+from llm-watchdog import llm-watchdoger, AlertEvent
 
-watcher = PromptWatcher(pii_threshold=0.1)
+watcher = llm-watchdoger(pii_threshold=0.1)
 
 def my_alert(event: AlertEvent):
     print(f"ALERT: {event.failure_type.value} â€” score={event.score:.2f}")
@@ -114,9 +112,9 @@ watcher.watch("Tell me about John", "Contact john@example.com at 555-555-5555")
 
 ```python
 import asyncio
-from promptwatch import PromptWatcher
+from llm-watchdog import llm-watchdoger
 
-watcher = PromptWatcher()
+watcher = llm-watchdoger()
 
 async def main():
     result = await watcher.awatch("prompt", "response")
@@ -130,7 +128,7 @@ asyncio.run(main())
 ## Batch Watching
 
 ```python
-from promptwatch.advanced import batch_watch, abatch_watch
+from llm-watchdog.advanced import batch_watch, abatch_watch
 
 pairs = [("prompt1", "response1"), ("prompt2", "response2")]
 results = batch_watch(watcher, pairs, max_workers=8)
@@ -141,7 +139,7 @@ results = batch_watch(watcher, pairs, max_workers=8)
 ## Topic Guard
 
 ```python
-watcher = PromptWatcher(
+watcher = llm-watchdoger(
     topic_allowed=["python", "code", "programming", "function"],
     topic_blocked=["politics", "religion", "violence"],
 )
@@ -155,7 +153,7 @@ result = watcher.watch("How do I code?", "This involves violent politics.")
 
 ### Caching
 ```python
-from promptwatch.advanced import WatchCache
+from llm-watchdog.advanced import WatchCache
 cache = WatchCache(max_size=512, ttl=300)
 cached_watch = cache.memoize(watcher)
 result = cached_watch("prompt", "response")
@@ -164,7 +162,7 @@ print(cache.stats())
 
 ### Drift Detection
 ```python
-from promptwatch.advanced import DriftDetector
+from llm-watchdog.advanced import DriftDetector
 detector = DriftDetector(threshold=0.1)
 detector.set_baseline([0.1, 0.2, 0.1, 0.15])
 print(detector.is_drifting([0.5, 0.6, 0.4, 0.55]))  # True
@@ -172,7 +170,7 @@ print(detector.is_drifting([0.5, 0.6, 0.4, 0.55]))  # True
 
 ### Pipeline
 ```python
-from promptwatch.advanced import WatchPipeline
+from llm-watchdog.advanced import WatchPipeline
 pipeline = WatchPipeline()
 pipeline.add_step("log", lambda r: r)
 pipeline.filter(lambda r: r.passed)
@@ -181,7 +179,7 @@ result = pipeline.run(watch_result)
 
 ### PII Scrubbing
 ```python
-from promptwatch.advanced import PIIScrubber
+from llm-watchdog.advanced import PIIScrubber
 scrubber = PIIScrubber()
 clean = scrubber.mask("Email me at alice@example.com or call 555-123-4567")
 # "Email me at [REDACTED_EMAIL] or call [REDACTED_PHONE]"
@@ -189,7 +187,7 @@ clean = scrubber.mask("Email me at alice@example.com or call 555-123-4567")
 
 ### Regression Tracking
 ```python
-from promptwatch.advanced import RegressionTracker
+from llm-watchdog.advanced import RegressionTracker
 tracker = RegressionTracker(tolerance=0.05)
 tracker.record("deploy_v1", 0.10)
 tracker.record("deploy_v2", 0.25)
@@ -198,7 +196,7 @@ print(tracker.is_regressing())  # True
 
 ### Agent Session Monitoring
 ```python
-from promptwatch.advanced import AgentWatchSession
+from llm-watchdog.advanced import AgentWatchSession
 session = AgentWatchSession(watcher, max_risk_budget=2.0)
 for prompt, response in agent_turns:
     session.watch_turn(prompt, response)
@@ -209,11 +207,11 @@ for prompt, response in agent_turns:
 ### FastAPI Middleware
 ```python
 from fastapi import FastAPI
-from promptwatch import PromptWatcher
-from promptwatch.middleware import create_fastapi_middleware
+from llm-watchdog import llm-watchdoger
+from llm-watchdog.middleware import create_fastapi_middleware
 
 app = FastAPI()
-watcher = PromptWatcher()
+watcher = llm-watchdoger()
 app.add_middleware(create_fastapi_middleware(watcher))
 ```
 
@@ -222,8 +220,8 @@ app.add_middleware(create_fastapi_middleware(watcher))
 ## CLI
 
 ```bash
-promptwatch --prompt "What is the capital?" --response "Paris is the capital."
-promptwatch --prompt "Tell me about John" --response "Call 555-123-4567" --json
+llm-watchdog --prompt "What is the capital?" --response "Paris is the capital."
+llm-watchdog --prompt "Tell me about John" --response "Call 555-123-4567" --json
 ```
 
 ---
@@ -245,11 +243,11 @@ promptwatch --prompt "Tell me about John" --response "Call 555-123-4567" --json
 ## Installation
 
 ```bash
-pip install promptwatch                    # core only
-pip install promptwatch[fastapi]           # with FastAPI middleware
-pip install promptwatch[flask]             # with Flask middleware
-pip install promptwatch[opentelemetry]     # with OTEL tracing
-pip install promptwatch[all]               # everything
+pip install llm-watchdog                    # core only
+pip install llm-watchdog[fastapi]           # with FastAPI middleware
+pip install llm-watchdog[flask]             # with Flask middleware
+pip install llm-watchdog[opentelemetry]     # with OTEL tracing
+pip install llm-watchdog[all]               # everything
 ```
 
 ---

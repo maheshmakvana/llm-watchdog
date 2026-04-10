@@ -1,4 +1,4 @@
-"""Core PromptWatcher — orchestrates all detectors."""
+"""Core LlmWatchdog — orchestrates all detectors for llm_watchdog."""
 from __future__ import annotations
 
 import asyncio
@@ -22,7 +22,7 @@ def _max_risk(levels: List[RiskLevel]) -> RiskLevel:
     return max(levels, key=lambda r: _RISK_ORDER[r])
 
 
-class PromptWatcher:
+class LlmWatchdog:
     """
     Production-grade LLM response monitor.
 

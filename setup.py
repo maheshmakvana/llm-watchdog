@@ -6,7 +6,7 @@ setup(
     description="Production-grade silent failure detection for LLM applications — hallucination alerts, PII leak detection, semantic drift, topic guard, and real-time observability",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/MaheshMakvana1/llm-watchdog",
+    url="https://github.com/maheshmakvana/llm-watchdog",
     packages=find_packages(exclude=["tests*", "venv*", "llm-watchdog*", "build*"]),
     python_requires=">=3.8",
     install_requires=[

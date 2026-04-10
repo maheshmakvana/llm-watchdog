@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="llm-watchdog",
-    version="1.0.1",
+    version="1.0.2",
     description="Production-grade silent failure detection for LLM applications — hallucination alerts, PII leak detection, semantic drift, topic guard, and real-time observability",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",

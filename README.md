@@ -358,3 +358,21 @@ pip install llm-watchdog[all]               # everything
 ## Keywords
 
 llm monitoring, ai observability, hallucination detection, pii detection, semantic drift, production ai monitoring, llm alerts, ai safety, prompt monitoring, silent failure detection, llm quality, topic drift, ai reliability, llm guardrails, prompt injection, ai production
+
+## Contributing
+
+Contributions are welcome! Here's how to get started:
+
+1. Fork the repository on [GitHub](https://github.com/maheshmakvana/llm-watchdog)
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Make your changes and add tests
+4. Run the test suite: `pytest tests/ -v`
+5. Submit a pull request
+
+Please open an issue first for major changes to discuss the approach.
+
+## Author
+
+**Mahesh Makvana** — [GitHub](https://github.com/maheshmakvana) · [PyPI](https://pypi.org/user/maheshmakvana/)
+
+MIT License

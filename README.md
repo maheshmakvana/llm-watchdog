@@ -342,6 +342,19 @@ pip install llm-watchdog[all]               # everything
 
 ---
 
+## Changelog
+
+### v1.0.2 (2026-04-10)
+- Added Changelog section to README for release traceability
+- Fixed GitHub URL in package metadata
+
+### v1.0.1
+- Added advanced features: hallucination detection, PII detection, semantic drift monitoring, quality scoring
+- Renamed package from `promptwatch` to `llm_watchdog`
+
+### v1.0.0
+- Initial release: production-grade silent failure detection for LLM applications
+
 ## Keywords
 
 llm monitoring, ai observability, hallucination detection, pii detection, semantic drift, production ai monitoring, llm alerts, ai safety, prompt monitoring, silent failure detection, llm quality, topic drift, ai reliability, llm guardrails, prompt injection, ai production

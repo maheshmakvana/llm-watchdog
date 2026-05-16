@@ -1,3 +1,5 @@
+![llm-watchdog Banner](assets/images/banner.svg)
+
 # llm-watchdog
 
 **Production-grade silent failure detection for LLM applications.**

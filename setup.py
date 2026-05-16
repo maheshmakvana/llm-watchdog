@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 setup(
     name="llm-watchdog",
-    version="1.0.5",
-    description="Production-grade silent failure detection for LLM applications ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â hallucination alerts, PII leak detection, semantic drift, topic guard, and real-time observability",
+    version="1.0.6",
+    description="Production-grade silent failure detection for LLM applications ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â hallucination alerts, PII leak detection, semantic drift, topic guard, and real-time observability",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/maheshmakvana/llm-watchdog",

@@ -2,9 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
     name="llm-watchdog",
-    version="1.0.6",
-    description="Production-grade silent failure detection for LLM applications ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â hallucination alerts, PII leak detection, semantic drift, topic guard, and real-time observability",
-    long_description=open("README.md").read(),
+    version="1.0.8",
+    description="Production-grade silent failure detection for LLM applications ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â hallucination alerts, PII leak detection, semantic drift, topic guard, and real-time observability",
+    long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/maheshmakvana/llm-watchdog",
     packages=find_packages(exclude=["tests*", "venv*", "llm-watchdog*", "build*"]),
@@ -36,6 +36,7 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: System :: Monitoring",

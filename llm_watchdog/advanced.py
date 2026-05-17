@@ -29,7 +29,7 @@ import uuid
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple
 
 from .models import WatchResult, RiskLevel, FailureType
@@ -104,15 +104,22 @@ class WatchCache:
 
     def save(self, path: str) -> None:
         with self._lock:
-            with open(path, "wb") as f:
-                pickle.dump({"store": self._store, "order": list(self._order)}, f)
+            data = {
+                "store": {k: (v[0].model_dump(mode="json"), v[1]) for k, v in self._store.items()},
+                "order": list(self._order),
+            }
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(data, f)
 
     def load(self, path: str) -> None:
-        with open(path, "rb") as f:
-            data = pickle.load(f)
+        from .watcher import LlmWatchdog
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
         with self._lock:
-            self._store = data["store"]
             self._order = deque(data["order"])
+            self._store = {}
+            for k, (result_dict, ts) in data["store"].items():
+                self._store[k] = (WatchResult.model_validate(result_dict), ts)
 
 
 # ── Category 2: Pipeline ──────────────────────────────────────────────────
@@ -521,7 +528,7 @@ class AuditLog:
     def record(self, result: WatchResult) -> None:
         entry = {
             "id": str(uuid.uuid4()),
-            "ts": datetime.utcnow().isoformat(),
+            "ts": datetime.now(timezone.utc).isoformat(),
             "passed": result.passed,
             "risk": result.overall_risk.value,
             "score": result.overall_score,

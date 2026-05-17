@@ -1,7 +1,7 @@
 """Pydantic models for llm_watchdog data structures."""
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
@@ -34,7 +34,7 @@ class DetectionResult(BaseModel):
     score: float = Field(ge=0.0, le=1.0, description="Risk score 0–1")
     details: Dict[str, Any] = Field(default_factory=dict)
     matched_patterns: List[str] = Field(default_factory=list)
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class WatchResult(BaseModel):
@@ -47,7 +47,7 @@ class WatchResult(BaseModel):
     detections: List[DetectionResult] = Field(default_factory=list)
     alerts_fired: List[str] = Field(default_factory=list)
     latency_ms: float = 0.0
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to plain dict."""
@@ -62,7 +62,7 @@ class AlertEvent(BaseModel):
     score: float
     prompt: str
     response: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
@@ -70,4 +70,4 @@ class DriftSnapshot(BaseModel):
     """A snapshot of metric distributions for drift detection."""
     snapshot_id: str
     metrics: Dict[str, List[float]]
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
